@@ -1,5 +1,6 @@
 package com.victorskg.redditclonecore.model;
 
+import com.victorskg.redditclonecore.model.dto.RegisterRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -41,5 +42,15 @@ public class User extends BaseEntity<Long> {
 
     @Column(name = "enabled")
     private boolean enabled;
+
+    public static User of(RegisterRequest registerRequest) {
+        return new User(
+                registerRequest.getUsername(),
+                registerRequest.getPassword(),
+                registerRequest.getEmail(),
+                Instant.now(),
+                false
+        );
+    }
 
 }
