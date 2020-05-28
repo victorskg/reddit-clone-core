@@ -1,5 +1,6 @@
 package com.victorskg.redditclonecore.service;
 
+import com.victorskg.redditclonecore.exception.RedditException;
 import com.victorskg.redditclonecore.model.NotificationEmail;
 import com.victorskg.redditclonecore.model.User;
 import com.victorskg.redditclonecore.model.VerificationToken;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.UUID;
+
+import static java.lang.String.format;
 
 @Service
 @AllArgsConstructor
@@ -36,7 +39,22 @@ public class AuthService {
                 "Por favor, ative sua conta!",
                 user.getEmail(),
                 "Obrigado por se registrar em Reddit Clone. Clique no link abaixo para ativar sua conta: " +
-                        "http://localhost:8081/api/auth/accountVerification/" + token));
+                        format("http://localhost:8081/api/auth/%s/verification/%s", user.getId(), token)));
+    }
+
+    public void verifyAccount(Long userId, String token) {
+        var optionalToken = verificationTokenRepository.findByUserAndToken(userId, token);
+        optionalToken.orElseThrow(() -> new RedditException("Token inválido! Verifique o token e tente novamente."));
+        enableUser(optionalToken.get());
+    }
+
+    @Transactional
+    public void enableUser(VerificationToken verificationToken) {
+        var user = userRepository
+                .findByUsername(verificationToken.getUser().getUsername())
+                .orElseThrow(() -> new RedditException("Usuário '%s' não encontrado!"));
+        user.setEnabled(true);
+        userRepository.save(user);
     }
 
     private String generateVerificationToken(User user) {
@@ -45,5 +63,4 @@ public class AuthService {
         verificationTokenRepository.save(verificationToken);
         return token;
     }
-
 }

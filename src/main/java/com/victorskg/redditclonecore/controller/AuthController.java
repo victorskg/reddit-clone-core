@@ -5,10 +5,7 @@ import com.victorskg.redditclonecore.model.dto.RegisterRequest;
 import com.victorskg.redditclonecore.service.AuthService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.springframework.http.HttpStatus.OK;
 
@@ -23,5 +20,11 @@ public class AuthController {
     public ResponseEntity<Message> signUp(@RequestBody RegisterRequest registerRequest) {
         authService.signUp(registerRequest);
         return new ResponseEntity<>(Message.success("Usuário registrado com sucesso!"), OK);
+    }
+
+    @GetMapping("{userId}/verification/{token}")
+    public ResponseEntity<Message> verifyAccount(@PathVariable Long userId, @PathVariable String token) {
+        authService.verifyAccount(userId, token);
+        return new ResponseEntity<>(Message.success("Conta ativada com sucesso!"), OK);
     }
 }
