@@ -12,8 +12,8 @@ public class Message {
     private Integer code;
     private String message;
 
-    public static Message success(String message) {
-        return new Message(200, message);
+    public static Message message(Integer code, String message) {
+        return new Message(code, message);
     }
 
 }
