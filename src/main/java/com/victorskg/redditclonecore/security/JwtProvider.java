@@ -1,7 +1,7 @@
 package com.victorskg.redditclonecore.security;
 
 import com.victorskg.redditclonecore.exception.RedditException;
-import com.victorskg.redditclonecore.model.User;
+import org.springframework.security.core.userdetails.User;
 import io.jsonwebtoken.Jwts;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;

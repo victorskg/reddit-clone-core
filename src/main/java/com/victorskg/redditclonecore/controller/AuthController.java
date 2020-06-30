@@ -1,5 +1,6 @@
 package com.victorskg.redditclonecore.controller;
 
+import com.victorskg.redditclonecore.model.dto.AuthenticationResponse;
 import com.victorskg.redditclonecore.model.dto.LoginRequest;
 import com.victorskg.redditclonecore.model.Message;
 import com.victorskg.redditclonecore.model.dto.RegisterRequest;
@@ -31,8 +32,8 @@ public class AuthController {
     }
 
     @PostMapping("login")
-    public void login(LoginRequest loginRequest) {
-        authService.login(loginRequest);
+    public AuthenticationResponse login(@RequestBody LoginRequest loginRequest) {
+        return authService.login(loginRequest);
     }
 
 }

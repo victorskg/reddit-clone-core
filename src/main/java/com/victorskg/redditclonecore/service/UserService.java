@@ -6,7 +6,6 @@ import com.victorskg.redditclonecore.model.VerificationToken;
 import com.victorskg.redditclonecore.model.dto.RegisterRequest;
 import com.victorskg.redditclonecore.repository.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,11 +15,9 @@ public class UserService {
 
     private final UserRepository userRepository;
 
-    private final PasswordEncoder passwordEncoder;
-
-    public User save(RegisterRequest registerRequest) {
+    public User save(RegisterRequest registerRequest, String password) {
         var user = User.of(registerRequest);
-        user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+        user.setPassword(password);
         return userRepository.save(user);
     }
 

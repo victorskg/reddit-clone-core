@@ -1,6 +1,7 @@
 package com.victorskg.redditclonecore.service;
 
 import com.victorskg.redditclonecore.model.NotificationEmail;
+import com.victorskg.redditclonecore.model.dto.AuthenticationResponse;
 import com.victorskg.redditclonecore.model.dto.LoginRequest;
 import com.victorskg.redditclonecore.model.dto.RegisterRequest;
 import com.victorskg.redditclonecore.security.JwtProvider;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,13 +25,16 @@ public class AuthService {
 
     private final JwtProvider jwtProvider;
 
+    private final PasswordEncoder passwordEncoder;
+
     private final AuthenticationManager authenticationManager;
 
     private final VerificationTokenService verificationTokenService;
 
+
     @Transactional
     public void signUp(RegisterRequest registerRequest) {
-        var user = userService.save(registerRequest);
+        var user = userService.save(registerRequest, passwordEncoder.encode(registerRequest.getPassword()));
 
         var token = verificationTokenService.generateVerificationToken(user);
         mailService.sendMail(new NotificationEmail(
@@ -43,10 +48,12 @@ public class AuthService {
         userService.enableUser(verificationTokenService.findByUserIdAndToken(userId, token));
     }
 
-    public void login(LoginRequest loginRequest) {
+    public AuthenticationResponse login(LoginRequest loginRequest) {
         var authenticate = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 loginRequest.getUsername(), loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        jwtProvider.generateToken(authenticate);
+        var token = jwtProvider.generateToken(authenticate);
+
+        return new AuthenticationResponse(loginRequest.getUsername(), token);
     }
 }
