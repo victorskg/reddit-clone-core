@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.security.*;
 import java.security.cert.CertificateException;
 
+import static io.jsonwebtoken.Jwts.parser;
+
 @Service
 public class JwtProvider {
 
@@ -35,6 +37,29 @@ public class JwtProvider {
                 .setSubject(user.getUsername())
                 .signWith(getPrivateKey())
                 .compact();
+    }
+
+    public boolean validateToken(String jwt) {
+        parser().setSigningKey(getPublicKey()).parseClaimsJws(jwt);
+        return true;
+    }
+
+    public String getUsernameFromJwt(String jwt) {
+         var claims = parser()
+                 .setSigningKey(getPublicKey())
+                 .parseClaimsJws(jwt)
+                 .getBody();
+
+         return claims.getSubject();
+    }
+
+    private PublicKey getPublicKey() {
+        try {
+            return keyStore.getCertificate("springblog").getPublicKey();
+        } catch (KeyStoreException e) {
+            throw new RedditException("Um erro aconteceu enquanto carregavamos a chave pública. " +
+                    "Por favor, contate um administrador.");
+        }
     }
 
     private Key getPrivateKey() {
