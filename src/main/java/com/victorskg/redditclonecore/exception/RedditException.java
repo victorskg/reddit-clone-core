@@ -6,4 +6,8 @@ public class RedditException extends RuntimeException {
         super(message);
     }
 
+    public RedditException(String exMessage, Exception exception) {
+        super(exMessage, exception);
+    }
+
 }

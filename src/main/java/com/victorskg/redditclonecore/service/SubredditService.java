@@ -1,5 +1,7 @@
 package com.victorskg.redditclonecore.service;
 
+import com.victorskg.redditclonecore.exception.RedditException;
+import com.victorskg.redditclonecore.mapper.SubredditMapper;
 import com.victorskg.redditclonecore.model.Subreddit;
 import com.victorskg.redditclonecore.model.dto.SubredditDTO;
 import com.victorskg.redditclonecore.repository.SubredditRepository;
@@ -9,8 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static java.util.stream.Collectors.toList;
 
 @Slf4j
@@ -20,9 +22,11 @@ public class SubredditService {
 
     private final SubredditRepository repository;
 
+    private final SubredditMapper mapper;
+
     @Transactional
     public SubredditDTO save(SubredditDTO subredditDTO) {
-        var saved = repository.save(mapSubredditDTO(subredditDTO));
+        var saved = repository.save(mapper.mapDTOToSubreddit(subredditDTO));
         subredditDTO.setId(saved.getId());
 
         return subredditDTO;
@@ -32,22 +36,14 @@ public class SubredditService {
     public List<SubredditDTO> findALl() {
         return repository.findAll()
                 .stream()
-                .map(this::mapToDTO)
+                .map(mapper::mapSubredditToDTO)
                 .collect(toList());
     }
 
-    private Subreddit mapSubredditDTO(SubredditDTO subredditDTO) {
-        return Subreddit.builder()
-                .name(subredditDTO.getName())
-                .description(subredditDTO.getDescription())
-                .build();
-    }
-
-    private SubredditDTO mapToDTO(Subreddit subreddit) {
-        return SubredditDTO.builder()
-                .id(subreddit.getId())
-                .name(subreddit.getName())
-                .description(subreddit.getDescription())
-                .build();
+    public SubredditDTO findById(Long id) {
+        return repository.findById(id)
+                .map(mapper::mapSubredditToDTO)
+                .orElseThrow(() ->
+                        new RedditException(format("Não foi possível encontrar o subreddit de id %d.", id)));
     }
 }

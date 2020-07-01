@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 
 @Slf4j
 @RestController
@@ -28,7 +27,11 @@ public class SubredditController {
 
     @GetMapping
     public ResponseEntity<List<SubredditDTO>> findAll() {
-        return ResponseEntity.status(OK)
-                .body(service.findALl());
+        return ResponseEntity.ok(service.findALl());
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<SubredditDTO> findById(@PathVariable Long id) {
+        return ResponseEntity.ok(service.findById(id));
     }
 }
