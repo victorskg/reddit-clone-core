@@ -40,10 +40,23 @@ public class SubredditService {
                 .collect(toList());
     }
 
-    public SubredditDTO findById(Long id) {
+    @Transactional(readOnly = true)
+    public Subreddit findById(Long id) {
         return repository.findById(id)
-                .map(mapper::mapSubredditToDTO)
                 .orElseThrow(() ->
                         new RedditException(format("Não foi possível encontrar o subreddit de id %d.", id)));
     }
+
+    @Transactional(readOnly = true)
+    public SubredditDTO findDTOById(Long id) {
+        return mapper.mapSubredditToDTO(findById(id));
+    }
+
+    @Transactional(readOnly = true)
+    public Subreddit findByName(String name) {
+        return repository.findByName(name)
+                .orElseThrow(() ->
+                        new RedditException(format("Não foi possível encontrar o subreddit de nome %s.", name)));
+    }
+
 }

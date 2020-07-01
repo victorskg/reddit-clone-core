@@ -1,6 +1,7 @@
 package com.victorskg.redditclonecore.service;
 
 import com.victorskg.redditclonecore.model.NotificationEmail;
+import com.victorskg.redditclonecore.model.User;
 import com.victorskg.redditclonecore.model.dto.AuthenticationResponse;
 import com.victorskg.redditclonecore.model.dto.LoginRequest;
 import com.victorskg.redditclonecore.model.dto.RegisterRequest;
@@ -42,6 +43,13 @@ public class AuthService {
                 user.getEmail(),
                 "Obrigado por se registrar em Reddit Clone. Clique no link abaixo para ativar sua conta: " +
                         format("http://localhost:8081/api/auth/%s/verification/%s", user.getId(), token)));
+    }
+
+    @Transactional(readOnly = true)
+    public User getCurrentUser() {
+        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.
+                getContext().getAuthentication().getPrincipal();
+        return userService.findByUsername(principal.getUsername());
     }
 
     public void verifyAccount(Long userId, String token) {
