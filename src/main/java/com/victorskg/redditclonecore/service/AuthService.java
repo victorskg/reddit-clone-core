@@ -47,9 +47,8 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public User getCurrentUser() {
-        org.springframework.security.core.userdetails.User principal = (org.springframework.security.core.userdetails.User) SecurityContextHolder.
-                getContext().getAuthentication().getPrincipal();
-        return userService.findByUsername(principal.getUsername());
+        var userName = (String) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return userService.findByUsername(userName);
     }
 
     public void verifyAccount(Long userId, String token) {

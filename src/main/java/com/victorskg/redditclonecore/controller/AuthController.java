@@ -14,7 +14,7 @@ import static org.springframework.http.HttpStatus.OK;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("auth")
 public class AuthController {
 
     private final AuthService authService;

@@ -33,7 +33,7 @@ public class Subreddit extends BaseEntity<Long> {
     private List<Post> posts;
 
     @Column(name = "created_date")
-    private Instant createdDate;
+    private Instant createdDate = Instant.now();
 
     @ManyToOne(fetch = LAZY)
     private User user;

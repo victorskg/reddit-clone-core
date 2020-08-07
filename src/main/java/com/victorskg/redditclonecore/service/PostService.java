@@ -21,22 +21,18 @@ import static java.util.stream.Collectors.toList;
 @AllArgsConstructor
 public class PostService {
 
-    private final PostRepository repository;
-
+    private final PostMapper mapper;
+    private final UserService userService;
     private final AuthService authService;
-
+    private final PostRepository repository;
     private final SubredditService subredditService;
 
-    private final PostMapper mapper;
-
-    private final UserService userService;
-
     @Transactional
-    public Post save(PostRequest postRequest) {
+    public PostResponse save(PostRequest postRequest) {
         var subreddit = subredditService.findByName(postRequest.getSubredditName());
         var currentUser = authService.getCurrentUser();
 
-        return repository.save(mapper.map(postRequest, subreddit, currentUser));
+        return mapper.mapToResponse(repository.save(mapper.map(postRequest, subreddit, currentUser)));
     }
 
     @Transactional(readOnly = true)
@@ -55,6 +51,7 @@ public class PostService {
                         new RedditException(format("Não foi possível encontrar o post de id %d.", id)));
     }
 
+    @Transactional(readOnly = true)
     public List<PostResponse> findBySubreddit(Long subredditId) {
         var subreddit = subredditService.findById(subredditId);
 
@@ -64,6 +61,7 @@ public class PostService {
                 .collect(toList());
     }
 
+    @Transactional(readOnly = true)
     public List<PostResponse> findByUsername(String username) {
         var user = userService.findByUsername(username);
 

@@ -41,7 +41,7 @@ public class Post extends BaseEntity<Long> {
     private User user;
 
     @Column(name = "created_date")
-    private Instant createdDate;
+    private Instant createdDate = Instant.now();
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "subreddit_id", referencedColumnName = "id")
