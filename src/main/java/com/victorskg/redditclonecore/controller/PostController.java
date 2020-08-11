@@ -3,7 +3,7 @@ package com.victorskg.redditclonecore.controller;
 import com.victorskg.redditclonecore.model.dto.PostRequest;
 import com.victorskg.redditclonecore.model.dto.PostResponse;
 import com.victorskg.redditclonecore.service.PostService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("posts")
 public class PostController {
 

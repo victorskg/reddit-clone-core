@@ -71,4 +71,10 @@ public class PostService {
                 .collect(toList());
     }
 
+    public Post findPostById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() ->
+                        new RedditException(format("Não foi possível encontrar o post de id %d.", id)));
+    }
+
 }

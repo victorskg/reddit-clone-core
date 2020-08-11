@@ -2,7 +2,7 @@ package com.victorskg.redditclonecore.controller;
 
 import com.victorskg.redditclonecore.model.dto.SubredditDTO;
 import com.victorskg.redditclonecore.service.SubredditService;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
 import static org.springframework.http.HttpStatus.CREATED;
 
 @RestController
-@AllArgsConstructor
+@RequiredArgsConstructor
 @RequestMapping("subreddit")
 public class SubredditController {
 
